@@ -1,9 +1,9 @@
-from random import randint
+import random
 
-grid = [[3, 3, 3, 3],
-        [3, 3, 9, 9],
-        [3, 1, 9, 9],
-        [3, 3, 9, 8]]
+grid = [[0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]]
 
 
 def move_left(row):
@@ -11,20 +11,20 @@ def move_left(row):
         only works for one row.
     """
 
-    def move_elements(row):
+    def move_elements(row2):
         """
         this one shifts elements to the respective side
-        :param row:
+        :param row2:
         :return:
         """
-        for n in range(len(row)):
-            if row[n] == 0:
-                row.pop(n)
-                row.append(0)
-                for n in range(len(row[n:])):
-                    if row[n] == 0:
-                        row.pop(n)
-                        row.append(0)
+        for n in range(len(row2)):
+            if row2[n] == 0:
+                row2.pop(n)
+                row2.append(0)
+                for n in range(len(row2[n:])):
+                    if row2[n] == 0:
+                        row2.pop(n)
+                        row2.append(0)
 
     move_elements(row)
 
@@ -43,19 +43,19 @@ def move_right(row):
         only works for one row.
     """
 
-    def move_elements(row):
-        for n in range(len(row) - 1, -1, -1):
-            if row[n] == 0:
-                row.pop(n)
-                row.insert(0, 0)
-                for n in range(len(row[:n])):
-                    if row[n] == 0:
-                        row.pop(n)
-                        row.insert(0, 0)
+    def move_elements(row2):
+        for n in range(len(row2) - 1, -1, -1):
+            if row2[n] == 0:
+                row2.pop(n)
+                row2.insert(0, 0)
+                for n in range(len(row2[:n+1])):
+                    if row2[n] == 0:
+                        row2.pop(n)
+                        row2.insert(0, 0)
 
     move_elements(row)
     k = len(row) - 1
-    while k > 1:
+    while k > 0:
         p = k - 1
         if row[k] == row[p] and row[k] != 0:
             row[k] = row[p] * 2
@@ -68,7 +68,6 @@ def move_up():
     grid_column = 0
     for n in range(len(grid)):
         grid_column = [grid[0][n], grid[1][n], grid[2][n], grid[3][n]]
-        print(f"{grid_column} :grid_column")
         move_left(grid_column)
         grid[0][n], grid[1][n], grid[2][n], grid[3][n] = grid_column[0], grid_column[1], grid_column[2], grid_column[3]
 
@@ -81,13 +80,16 @@ def move_down():
         grid[0][n], grid[1][n], grid[2][n], grid[3][n] = grid_column[0], grid_column[1], grid_column[2], grid_column[3]
 
 
-
-for n in grid:
-    print(n)
-
-
 def spawn_num():
-    grid[randint(0, 3)][randint(0, 3)] = 2
+    possible_loc = []
+    for c in range(len(grid)):
+        for r in range(len(grid)):
+            if grid[c][r] == 0:
+                possible_loc.append((c, r))
+
+    if possible_loc:
+        loc = random.choice(possible_loc)
+        grid[loc[0]][loc[1]] = 2
 
 
 def print_grid():
@@ -95,14 +97,25 @@ def print_grid():
         print(*n)
 
 
-# print_grid()
+game_on = True
 
-# spawn_num()
-# print_grid()
-
-game_on = False
+spawn_num()
+print_grid()
 
 while game_on:
-    swiped = input("Where to swipe L/R/U/D : ")
-    if swiped == "L":
-        pass
+    swiped = input("Where to swipe L/R/U/D : ").lower()
+    match swiped:
+        case "l":
+            for n in grid:
+                move_left(n)
+        case "r":
+            for n in grid:
+                move_right(n)
+        case "u":
+            move_up()
+        case "d":
+            move_down()
+        case default:
+            print("anything other than L/R/U/D is not allowed")
+    spawn_num()
+    print_grid()
