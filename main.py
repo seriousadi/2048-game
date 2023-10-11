@@ -1,14 +1,21 @@
 import random
 
-grid = [[1, 2, 3, 4],
-        [8, 7, 6, 5],
-        [0, 0, 1, 0],
-        [12, 13, 14, 5]]
+grid = [[0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]]
 
 
 def move_left(row):
     """This shifts the nums to leat and adds the nums which are equal and are side by side
         only works for one row.
+
+            k = stones[curr] - stones[p]
+            print(stones[curr],stones[p])
+            p = curr
+            curr +=1
+            print(k,p,curr)
+
     """
 
     def move_elements(row2):
