@@ -1,9 +1,9 @@
 import random
 
-grid = [[0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]]
+grid = [[1, 2, 3, 4],
+        [8, 7, 6, 5],
+        [0, 0, 1, 0],
+        [12, 13, 14, 5]]
 
 
 def move_left(row):
@@ -48,7 +48,7 @@ def move_right(row):
             if row2[n] == 0:
                 row2.pop(n)
                 row2.insert(0, 0)
-                for n in range(len(row2[:n+1])):
+                for n in range(len(row2[:n + 1])):
                     if row2[n] == 0:
                         row2.pop(n)
                         row2.insert(0, 0)
@@ -80,7 +80,7 @@ def move_down():
         grid[0][n], grid[1][n], grid[2][n], grid[3][n] = grid_column[0], grid_column[1], grid_column[2], grid_column[3]
 
 
-def spawn_num():
+def spawn_num_and_quit_game():
     possible_loc = []
     for c in range(len(grid)):
         for r in range(len(grid)):
@@ -90,6 +90,16 @@ def spawn_num():
     if possible_loc:
         loc = random.choice(possible_loc)
         grid[loc[0]][loc[1]] = 2
+    else:
+        for n in range(len(grid)):
+            for p in range(len(grid) - 1):
+                if grid[n][p] == grid[n][p + 1] and grid[n][p] != 0:
+                    return False
+        for n in range(len(grid) - 1):
+            for p in range(len(grid)):
+                if grid[n][p] == grid[n + 1][p] and grid[n][p] != 0:
+                    return False
+        return True
 
 
 def print_grid():
@@ -99,7 +109,7 @@ def print_grid():
 
 game_on = True
 
-spawn_num()
+spawn_num_and_quit_game()
 print_grid()
 
 while game_on:
@@ -117,5 +127,8 @@ while game_on:
             move_down()
         case default:
             print("anything other than L/R/U/D is not allowed")
-    spawn_num()
-    print_grid()
+    if spawn_num_and_quit_game():
+        game_on = False
+        print("Game Over, You Lost")
+    else:
+        print_grid()
